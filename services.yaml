@@ -1,0 +1,58 @@
+check_batteries:
+  name: Check Batteries
+  description: Check all battery-powered sensors and send notifications for low batteries.
+  fields:
+    battery_threshold:
+      name: Battery Threshold
+      description: Battery level threshold for notifications (in percent)
+      required: true
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    notification_interval:
+      name: Notification Interval
+      description: Minimum time between notifications for the same device (in hours)
+      required: true
+      default: 24
+      selector:
+        number:
+          min: 1
+          max: 168
+          unit_of_measurement: hours
+    filter_regex:
+      name: Filter Regex
+      description: Regular expression to filter sensor names
+      required: false
+      example: "sensor\\..*_battery"
+      selector:
+        text:
+    notification_service:
+      name: Notification Service
+      description: Service to use for notifications (e.g. notify.email)
+      required: true
+      selector:
+        text:
+    notification_title:
+      name: Notification Title
+      description: Title template for notifications
+      required: false
+      default: "Low Battery Alert"
+      selector:
+        text:
+    notification_message:
+      name: Notification Message
+      description: Message template for notifications
+      required: false
+      default: |
+        Následující zařízení mají nízký stav baterie:
+        {% for device in devices %}
+        - {{ device.name }}: {{ device.battery_level }}%
+        {% endfor %}
+
+        Prosím vyměňte baterie co nejdříve.
+      selector:
+        text:
+          multiline: true
